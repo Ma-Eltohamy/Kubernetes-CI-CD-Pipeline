@@ -6,9 +6,8 @@ metadata:
     app: web
 spec:
   ports:
-    - port: 8080
+    - port: 3322
       targetPort: 80
-      nodePort: 31200
   selector:
     app: web
   type: LoadBalancer

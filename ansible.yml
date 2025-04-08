@@ -4,6 +4,11 @@
     - name: create new deployment
       command: kubectl apply -f /home/ubuntu/deployment.yml
 
+    - name: installing metal lb
+      command: kubectl apply -f https://raw.githubusercontent.com/metallb/metallb/v0.13.12/config/manifests/metallb-native.yaml
+
+    - name: applying metal lb service
+      command: kubectl apply -f metallb-config.yaml
+
     - name: create new service
       command: kubectl apply -f /home/ubuntu/service.yml
-
