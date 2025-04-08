@@ -1,1 +1,1 @@
-![overview image](./archetecture.png)
+![overview image](./arch.png)
