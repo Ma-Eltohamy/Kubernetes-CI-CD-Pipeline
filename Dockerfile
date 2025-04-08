@@ -1,4 +1,4 @@
-FROM centos:latest
+FROM centos:7
 
 # Install Apache and necessary tools
 RUN yum install -y httpd \
