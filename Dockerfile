@@ -22,4 +22,4 @@ RUN cp -rvf spering/* . && rm -rf spering spering.zip
 CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
 
 # Expose port 80
-EXPOSE 80
+EXPOSE 80 22
