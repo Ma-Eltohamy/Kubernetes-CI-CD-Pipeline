@@ -1,7 +1,11 @@
 FROM ubuntu:20.04
 
+# Set the time zone non-interactively to avoid tzdata prompt
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt-get update && apt-get install -y tzdata
+
 # Install Apache and necessary tools
-RUN apt-get update && apt-get install -y \
+RUN apt-get install -y \
   apache2 \
   zip \
   unzip \
