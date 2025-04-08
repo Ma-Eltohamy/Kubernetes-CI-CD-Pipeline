@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
         - name: web-cont
-          image: maeltohamy/pipline-demo:v1.53
+          image: maeltohamy/pipline-demo
           imagePullPolicy: Always
           ports:
             - containerPort: 80
