@@ -26,6 +26,7 @@ RUN curl -L -o finexo.zip https://www.free-css.com/assets/files/free-css-templat
 RUN unzip finexo.zip 
 
 # Move the contents to the working directory
+
 # RUN cp -rvf spering-html/* . && rm -rf spering spering.zip
 RUN cp -rvf finexo-html/* . && rm -rf finexo fiexo.zip
 
