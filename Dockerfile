@@ -17,13 +17,17 @@ RUN apt-get install -y \
 WORKDIR /var/www/html
 
 # Download the Spering template
-RUN curl -L -o spering.zip https://www.free-css.com/assets/files/free-css-templates/download/page296/spering.zip
+# RUN curl -L -o spering.zip https://www.free-css.com/assets/files/free-css-templates/download/page296/spering.zip # the spering.zip app
+RUN curl -L -o finexo.zip https://www.free-css.com/assets/files/free-css-templates/download/page296/finexo.zip
 
 # Unzip the template
-RUN unzip spering.zip
+
+#RUN unzip spering.zip # the spering.zip app
+RUN unzip finexo.zip 
 
 # Move the contents to the working directory
-RUN cp -rvf spering-html/* . && rm -rf spering spering.zip
+# RUN cp -rvf spering-html/* . && rm -rf spering spering.zip
+RUN cp -rvf finexo-html/* . && rm -rf finexo fiexo.zip
 
 # Start Apache in the foreground
 CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
