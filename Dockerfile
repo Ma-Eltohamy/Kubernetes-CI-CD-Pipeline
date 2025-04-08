@@ -1,7 +1,8 @@
-FROM centos:7
+FROM ubuntu:20.04
 
 # Install Apache and necessary tools
-RUN yum install -y httpd \
+RUN apt-get update && apt-get install -y \
+  apache2 \
   zip \
   unzip \
   curl
@@ -19,7 +20,7 @@ RUN unzip spering.zip
 RUN cp -rvf spering/* . && rm -rf spering spering.zip
 
 # Start Apache in the foreground
-CMD ["/usr/sbin/httpd", "-D", "FOREGROUND"]
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]
 
 # Expose port 80
 EXPOSE 80 22
