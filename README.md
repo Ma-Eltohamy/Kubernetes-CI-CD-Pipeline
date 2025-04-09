@@ -52,3 +52,4 @@ Installed and authenticated it using my authtoken.
 Started a tunnel pointing to the local Jenkins server (or whichever service you’re exposing).
 
 Ngrok provided a public URL (e.g., https://abc123.ngrok.io) which I used as the Payload URL in the GitHub Webhook configuration.
+
