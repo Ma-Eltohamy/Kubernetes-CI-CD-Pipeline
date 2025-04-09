@@ -1,0 +1,66 @@
+node{
+    environment {
+        USERNAME = credentials('docker-credentials')
+        PASSWORD = credentials('docker-credentials')
+    }
+    
+    stage ('Git checkout'){
+        git branch: 'main', url: 'https://github.com/Ma-Eltohamy/Kubernetes-CI-CD-Pipeline.git'
+    }
+    
+    stage ('Sending Dockerfile to ansible server over ssh'){
+        sshagent(['docker-ansible-server']) {
+            sh 'scp /var/lib/jenkins/workspace/pipline-demo/* ubuntu@172.17.0.2:/home/ubuntu/'
+        }
+    }
+    
+    stage ('Docker building image'){
+        sshagent(['docker-ansible-server']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 cd /home/ubuntu'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker image build -t $JOB_NAME:v1.$BUILD_ID .'
+        }
+    }
+    
+    stage('Tagging docker image') {
+        withCredentials([usernamePassword(
+            credentialsId: 'docker-credentials',
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD'
+        )]) {
+        sshagent(['docker-ansible-server']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 cd /home/ubuntu'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker image tag $JOB_NAME:v1.$BUILD_ID $USERNAME/$JOB_NAME:v1.$BUILD_ID'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker image tag $JOB_NAME:v1.$BUILD_ID $USERNAME/$JOB_NAME:latest'
+            }
+        }
+    }
+    
+    stage('Pushing docker image') {
+        withCredentials([usernamePassword(
+            credentialsId: 'docker-credentials',
+            usernameVariable: 'USERNAME',
+            passwordVariable: 'PASSWORD'
+        )]) {
+        sshagent(['docker-ansible-server']) {
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker login -u $USERNAME -p $PASSWORD'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker image push $USERNAME/$JOB_NAME:v1.$BUILD_ID'
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker image push $USERNAME/$JOB_NAME:latest'
+            
+            // removing the previous builded image to keep it clean
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 docker image rm $USERNAME/$JOB_NAME:v1.$BUILD_ID'
+            }
+        }
+    }
+    
+    stage ('Sending Dockerfile to kubernates server over ssh'){
+        sshagent(['web-k8s-app']) {
+            sh 'scp /var/lib/jenkins/workspace/pipline-demo/* ubuntu@172.17.0.1:/home/ubuntu/'
+        }
+    }
+    
+    stage ('Applying deployment using kubectl'){
+        sshagent(['docker-ansible-server']){
+            sh 'ssh -o StrictHostKeyChecking=no ubuntu@172.17.0.2 ansible-playbook ansible.yml'
+        }
+    }
+}
